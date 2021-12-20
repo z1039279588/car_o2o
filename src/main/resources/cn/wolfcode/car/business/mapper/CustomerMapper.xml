@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wolfcode.car.business.mapper.CustomerMapper" >
+  <resultMap id="BaseResultMap" type="cn.wolfcode.car.business.domain.Customer" >
+    <id column="id" property="id" />
+    <result column="name" property="name" />
+    <result column="phone" property="phone" />
+    <result column="birthday" property="birthday" />
+    <result column="vip" property="vip" />
+    <result column="remark" property="remark" />
+  </resultMap>
+  <update id="deleteByPrimaryKey" >
+    update bus_customer set soft_delete = 1 where id = #{id}
+  </update>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into bus_customer (name, phone, birthday, vip, remark)
+    values (#{name}, #{phone}, #{birthday}, #{vip}, #{remark})
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update bus_customer
+    set name = #{name},
+      phone = #{phone},
+      birthday = #{birthday},
+      vip = #{vip},
+      remark = #{remark},
+      soft_delete = #{softDelete}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select id, name, phone, birthday, vip, remark
+    from bus_customer
+    where id = #{id} and soft_delete = 0
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, name, phone, birthday, vip, remark
+    from bus_customer
+  </select>
+    <select id="selectForList" resultMap="BaseResultMap" >
+      select id, name, phone, birthday, vip, remark
+      from bus_customer
+      <where>
+        <if test="keyword!=null and keyword!=''">
+          and name like concat('%',#{keyword},'%')
+        </if>
+        <if test="startTime != null">
+          <![CDATA[and birthday >= #{startTime}]]>
+        </if>
+        <if test="endTime != null">
+          <![CDATA[and birthday <= #{endTime}]]>
+        </if>
+        <if test="vip != null">
+          and vip = #{vip}
+        </if>
+      </where>
+    </select>
+  <select id="listPhone" resultType="java.lang.String">
+    select phone from bus_customer
+  </select>
+
+
+</mapper>
